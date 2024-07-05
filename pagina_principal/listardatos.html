@@ -18,13 +18,11 @@
     <table>
         <thead>
             <tr>
+                <th>Imagen</th>
                 <th>Nombre</th>
                 <th>Descripción</th>
                 <th>Sabor</th>
-                <th>Tipo</th>
-                <th>Cobertura</th>
-                <th>Precio</th>
-                <th>Acciones</th> <!-- Nueva columna para las acciones -->
+
             </tr>
         </thead>
         <tbody id="helados-list"></tbody>
@@ -81,13 +79,10 @@
                     // Crear una nueva fila de tabla
                     var row = document.createElement('tr');
                     // Establecer el contenido HTML de la fila con los datos del helado
-                    row.innerHTML = '<td>' + helado.imagen + '</td>' +
+                    row.innerHTML = '<img src="/imagenes/' + helado.imagen + '" alt="' + helado.nombre + '" width="200">'+
                                     '<td>' + helado.nombre + '</td>' +
                                     '<td>' + helado.descripcion + '</td>' +
                                     '<td>' + helado.sabor + '</td>' +
-                                    '<td>' + helado.tipo + '</td>' +
-                                    '<td>' + helado.cobertura + '</td>' +
-                                    '<td>' + helado.precio + '</td>' +
                                     '<td>' +
                                         "<button class='btn btn-info btn-sm' onclick='verDetalles(" + helado.id + ")' data-bs-toggle='modal' data-bs-target='#detallesModal'>Ver detalles</button>" +
                                         "<button class='btn btn-danger btn-sm' onclick='prepararEliminar(" + helado.id + ")' data-bs-toggle='modal' data-bs-target='#eliminarModal'>Eliminar</button>" +

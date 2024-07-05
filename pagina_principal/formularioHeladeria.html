@@ -16,7 +16,7 @@
     
     <h2>Formulario de Heladería</h2>
 
-    <form id="formulario-heladeria" action="/guardar_helado" method="post">
+    <form id="formulario-heladeria" action="/guardar_helado" method="post" enctype="multipart/form-data">
         <div>
             <label for="nombre">Nombre del Helado:</label>
             <input type="text" id="nombre" name="nombre" required>
@@ -25,6 +25,10 @@
             <label for="descripcion">Descripción:</label>
             <input type="text" id="descripcion" name="descripcion" required>
         </div>
+        <div>
+            <label for="imagen">Imagen:</label>
+            <input type="file" id="imagen" name="imagen" accept="image/*" required>
+          </div>
         <div>
             <label for="sabor">Sabor:</label>
             <input type="text" id="sabor" name="sabor" required>

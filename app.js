@@ -9,7 +9,7 @@ const mysql = require('mysql');
 const app = express();
 const port = 3000;
 
-const upload = multer({dest: '/imagenes/'});
+const upload = multer({dest: 'pagina_principal/imagenes/'});
 
 // Configurar la conexión a la base de datos
 const connection = mysql.createConnection({
