@@ -76,6 +76,41 @@ app.get('/helado_especifico/:id', (req, res) => {
         res.json(result[0]);
     });
 });
+app.post('/registrarUsuario',(req,res)=>{
+    const {nombre, correo, contraseña, rol } = req.body;
+
+    const query = 'INSERT INTO usuarios (nombre, correo, contraseña, rol) VALUES (?, ?, ?, ?)';
+    connection.query(query, [nombre, correo, contraseña, rol], (err, result) => {
+        if (err) {
+            console.error('Error al registrar el usuario:', err);
+            res.send('Error al registrar el usuario');
+        } else {
+            res.redirect('/iniciarSesion.html');
+        }
+    });
+});
+app.post('/iniciar_sesion', (req, res) => { // Define una ruta POST para '/iniciar_sesion'
+    const { correo, contraseña } = req.body; // Extrae 'correo' y 'contraseña' del cuerpo de la solicitud
+
+    // Define la consulta SQL para obtener el rol del usuario que coincida con el correo y la contraseña
+    const query = 'SELECT rol FROM usuarios WHERE correo = ? AND contraseña = ?';
+
+    connection.query(query, [correo, contraseña], (err, results) => {
+        if (err) { // Si hay un error en la consulta
+            console.error('Error al iniciar sesión:', err);
+            res.send('Error al iniciar sesión'); 
+        } else if (results.length > 0) { 
+            const rol = results[0].rol; 
+            if (rol === 1) { 
+                res.redirect('/formularioHeladeria.html'); 
+            } else if (rol === 2) { 
+                res.redirect('/formularioHeladeria.html'); 
+            }
+        } else { 
+            res.send('Correo o clave incorrectos'); 
+        }
+    });
+});
 //Servidor ejecutandose en el puerto 3000
 
 app.use(express.static(path.join(__dirname, 'pagina_principal')));
