@@ -54,7 +54,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p id="detallesProducto"></p>
+                    <p id="detallesHelado"></p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
@@ -81,15 +81,16 @@
                     // Crear una nueva fila de tabla
                     var row = document.createElement('tr');
                     // Establecer el contenido HTML de la fila con los datos del helado
-                    row.innerHTML = '<td>' + helado.nombre + '</td>' +
+                    row.innerHTML = '<td>' + helado.imagen + '</td>' +
+                                    '<td>' + helado.nombre + '</td>' +
                                     '<td>' + helado.descripcion + '</td>' +
                                     '<td>' + helado.sabor + '</td>' +
                                     '<td>' + helado.tipo + '</td>' +
                                     '<td>' + helado.cobertura + '</td>' +
                                     '<td>' + helado.precio + '</td>' +
                                     '<td>' +
-                                        '<button onclick="eliminarHelado(' + helado.id + ')">Eliminar</button>' +
-                                        '<button onclick="detalleHelado(' + helado.id + ')">Ver Detalle</button>' +
+                                        "<button class='btn btn-info btn-sm' onclick='verDetalles(" + helado.id + ")' data-bs-toggle='modal' data-bs-target='#detallesModal'>Ver detalles</button>" +
+                                        "<button class='btn btn-danger btn-sm' onclick='prepararEliminar(" + helado.id + ")' data-bs-toggle='modal' data-bs-target='#eliminarModal'>Eliminar</button>" +
                                     '</td>';
                     // Agregar la fila a la lista de helados
                     heladosList.appendChild(row);
@@ -97,6 +98,76 @@
             });
         };
 
+    </script>
+    <script>
+        function verDetalles(id) {
+        fetch("/Helado/" + id)
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(datos) {
+                document.getElementById("detallesHelado").innerHTML =
+                    "<p>ID: " + datos.id + "</p>" +
+                    "<p>Nombre: " + datos.nombre + "</p>" +
+                    "<p>Descripcion:" + datos.descripcion +"</p>" +
+                    "<p>Sabor : " + datos.sabor +"</p>"+
+                    "<p>Tipo: " + datos.tipo + "</p>" +
+                    "<p>Cobertura:" + datos.cobertura +"</p>" +
+                    "<p>Precio: $" + datos.precio +"</p>";
+            })
+            .catch(function(error) {
+                console.error("Error al obtener los detalles del helado:", error);
+            });
+    }
+      
+        function eliminarProducto(IdProducto) {
+            fetch('/eliminarProducto/' + IdProducto, {
+                method: 'DELETE'
+            })
+            .then(function(response) {
+                if (response.ok) {
+                    console.log('producto eliminado correctamente.');
+                   
+                    window.location.reload();
+                } else {
+                    console.error('Error al eliminar el producto.');
+                }
+            })
+            .catch(function(error) {
+                console.error('Error en la solicitud:', error);
+            });
+        }
+        var productoAEliminar = null;
+
+        function prepararEliminar(id) {
+            // Asigna el ID del usuario a eliminar a la variable global
+            productoAEliminar = id;
+        }
+        document.getElementById("confirmarEliminarBtn").addEventListener("click", function() {
+            // Verifica que usuarioAEliminar no sea null
+            if (productoAEliminar !== null) {
+                // Realiza una solicitud fetch para eliminar el usuario con el ID almacenado en usuarioAEliminar
+                fetch("/eliminarProducto/" + productoAEliminar, {
+                    method: "DELETE" // Especifica el método HTTP DELETE para la solicitud
+                })
+                .then(function(response) {
+                    
+                    if (response.ok) {
+                        alert("helado eliminado exitosamente");
+                        location.reload(); // Recarga la página para actualizar la lista de usuarios
+                    } else {
+                        alert("Error al eliminar el helado");
+                    }
+                })
+                .catch(function(error) {
+                    // Maneja cualquier error que ocurra durante la solicitud fetch
+                    console.error("Error al eliminar el helado:", error);
+                });
+            }
+        }); 
+
+        
+    
     </script>
 
 </body>

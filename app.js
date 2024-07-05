@@ -56,7 +56,7 @@ app.get('/helados', (req, res) => {
     });
 });
 // Ruta para obtener los datos de una película por su ID
-app.get('/helado_especifico/:id', (req, res) => {
+app.get('/Helado/:id', (req, res) => {
     // Extraer el ID de los parámetros de la solicitud
     const id = req.params.id;
     // Ejecutar una consulta SQL para obtener los datos de la película con el ID proporcionado
@@ -74,6 +74,26 @@ app.get('/helado_especifico/:id', (req, res) => {
         }
         // Enviar los datos de la película como respuesta en formato JSON
         res.json(result[0]);
+    });
+});+
+app.delete('/eliminarProducto/:id', (req, res) => {
+    const id = req.params.id;
+    console.log(`Intentando eliminar el helado con id: ${id}`);
+    
+    const query = 'DELETE FROM Helado WHERE id = ?';
+
+    connection.query(query, [id], (error, results) => {
+        if (error) {
+            console.error('Error al eliminar el helado:', error);
+            res.status(500).send('Error al eliminar el helado.');
+        } else {
+            console.log('Resultados de la eliminación:', results);
+            if (results.affectedRows > 0) {
+                res.send('helado eliminado correctamente.');
+            } else {
+                res.status(404).send('helado no encontrado.');
+            }
+        }
     });
 });
 app.post('/registrarUsuario',(req,res)=>{
