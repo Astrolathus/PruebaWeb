@@ -9,7 +9,7 @@ const mysql = require('mysql');
 const app = express();
 const port = 3000;
 
-const upload = multer({dest: 'pagina_principal/imagenes/'});
+const upload = multer({dest: '/imagenes/'});
 
 // Configurar la conexión a la base de datos
 const connection = mysql.createConnection({
@@ -33,13 +33,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/imagenes', express.static(path.join(__dirname, 'imagenes')));
 app.use(express.json());
 //Configuro para que la aplicacon inicie desde el director o carpeta pagina principal
-app.use(express.static(path.join(__dirname, 'pagina_principal')));
+
 
 
 app.post('/guardar_helado',upload.single('imagen'),(req, res) => {
     const { nombre, descripcion, sabor, tipo, cobertura, precio } = req.body;
     const imagen = req.file.filename;
-    const sql = 'INSERT INTO Helado (nombre, descripcion, imagen, sabor, tipo, cobertura, precio) VALUES (?, ?, ?, ?, ?, ?)';
+    const sql = 'INSERT INTO Helado (nombre, descripcion, imagen, sabor, tipo, cobertura, precio) VALUES (?, ?, ?, ?, ?, ?, ?)';
     connection.query(sql, [nombre, descripcion, imagen, sabor, tipo, cobertura, precio], (err, result) => {
         if (err) throw err;
         console.log('Helado insertada correctamente.');
@@ -131,6 +131,12 @@ app.post('/iniciar_sesion', (req, res) => { // Define una ruta POST para '/inici
         }
     });
 });
+
+app.post('/guardar_helado', upload.single('imagen'), (req, res) => {
+    res.status(200).send('Imagen subida correctamente');
+});
+
+
 //Servidor ejecutandose en el puerto 3000
 
 app.use(express.static(path.join(__dirname, 'pagina_principal')));
