@@ -1,18 +1,25 @@
 //Libreria de Express
 const express = require('express');
 //Libreria Path
+const multer = require('multer');
+//Libreria Mysql
 const path = require('path');
 //Libreria Mysql
 const mysql = require('mysql');
 const app = express();
 const port = 3000;
+
+const upload = multer({dest: 'pagina_principal/imagenes/'});
+
 // Configurar la conexión a la base de datos
 const connection = mysql.createConnection({
     host: '10.0.6.39',
     user: 'estudiante',
     password: 'Info-2023',
-    database: 'Heladeria'
+    database: 'HeladeriaNyP'
 });
+
+
 //Verificacion de errores para validar si la conexion es correcta
 connection.connect((err) => {
     if (err) {
@@ -23,15 +30,17 @@ connection.connect((err) => {
 });
 //Envio los datos del formulario por url
 app.use(express.urlencoded({ extended: true }));
-//Convierto en formato json
+app.use('/imagenes', express.static(path.join(__dirname, 'imagenes')));
 app.use(express.json());
 //Configuro para que la aplicacon inicie desde el director o carpeta pagina principal
 app.use(express.static(path.join(__dirname, 'pagina_principal')));
-//Recibo los valores y los envio a la tabla
-app.post('/guardar_helado',(req, res) => {
+
+
+app.post('/guardar_helado',upload.single('imagen'),(req, res) => {
     const { nombre, descripcion, sabor, tipo, cobertura, precio } = req.body;
-    const sql = 'INSERT INTO Helado (nombre, descripcion, sabor, tipo, cobertura, precio) VALUES (?, ?, ?, ?, ?, ?)';
-    connection.query(sql, [nombre, descripcion, sabor, tipo, cobertura, precio], (err, result) => {
+    const imagen = req.file.filename;
+    const sql = 'INSERT INTO Helado (nombre, descripcion, imagen, sabor, tipo, cobertura, precio) VALUES (?, ?, ?, ?, ?, ?)';
+    connection.query(sql, [nombre, descripcion, imagen, sabor, tipo, cobertura, precio], (err, result) => {
         if (err) throw err;
         console.log('Helado insertada correctamente.');
         res.redirect('/listardatos.html');
@@ -68,6 +77,8 @@ app.get('/helado_especifico/:id', (req, res) => {
     });
 });
 //Servidor ejecutandose en el puerto 3000
+
+app.use(express.static(path.join(__dirname, 'pagina_principal')));
 app.listen(port, () => {
     console.log('Servidor corriendo en http://localhost:3000');
 });
